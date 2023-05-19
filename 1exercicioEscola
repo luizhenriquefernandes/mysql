@@ -244,4 +244,7 @@ Você pode criar gatilhos semelhantes para outras operações (UPDATE e DELETE) 
 que desejar. Basta ajustar as cláusulas AFTER e as ações dentro do bloco BEGIN-END de
  acordo com a operação desejada.
 
-É importante mencionar que o uso de gatilhos e o registro de backups podem impact
+É importante mencionar que o uso de gatilhos e o registro de backups podem impactar 
+o desempenho do banco de dados, especialmente em casos de alta carga ou operações 
+frequentes. Portanto, é necessário avaliar cuidadosamente a implementação em um 
+ambiente de produção.
