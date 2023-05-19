@@ -1,0 +1,247 @@
+--Exercício elaborado pelo prof. Luiz Henrique
+-- data 19/05/23 versão 1
+Faça uma query em mysql que crie uma query nome do banco de dados: 
+escola, dentro de escola faça 5 tabelas: aluno com essas coluna: 
+matrícula, nome, cpf, turma, data de nascimento sexo, curso. tabela 
+professor com essas colunas: nome, cpf, especialidade, sexo, data de 
+nascimento , secretaria com essas colunas matrícula_aluno, matrícula_professor, 
+histórico escolar. tabela curso com essas colunas código do curso, 
+tipo de curso, duração de curso, código da sala. Insira 6 registros dentro de 
+cada tabela, todas as tabelas deverão ter chaves primarias montadas por 
+constraint, e as chaves estrangeiras deverão ser montadas por constraint 
+também, o relacionamento entre professor e aluno é de n para n, o 
+relacionamento de aluno e secretaria é de n para 1 o relacionamento de aluno 
+e secretaria é de n para 1, o relacionamento de professor e secretaria é de 
+n para 1.
+
+Solução
+-- Criação do banco de dados
+CREATE DATABASE escola;
+
+-- Uso do banco de dados
+USE escola;
+
+-- Criação da tabela aluno
+CREATE TABLE aluno (
+  matricula INT PRIMARY KEY,
+  nome VARCHAR(50),
+  cpf VARCHAR(11),
+  turma VARCHAR(20),
+  data_nascimento DATE,
+  sexo CHAR(1),
+  id_curso INT,
+  CONSTRAINT fk_curso_aluno FOREIGN KEY (id_curso) REFERENCES curso(codigo_curso)
+);
+
+-- Criação da tabela professor
+CREATE TABLE professor (
+  matricula INT PRIMARY KEY,
+  nome VARCHAR(50),
+  cpf VARCHAR(11),
+  especialidade VARCHAR(50),
+  sexo CHAR(1),
+  data_nascimento DATE,
+  id_secretaria INT,
+  CONSTRAINT fk_secretaria_professor FOREIGN KEY (id_secretaria) REFERENCES secretaria(matricula_aluno)
+);
+
+-- Criação da tabela secretaria
+CREATE TABLE secretaria (
+  matricula_aluno INT PRIMARY KEY,
+  matricula_professor INT,
+  historico_escolar VARCHAR(100),
+  CONSTRAINT fk_aluno_secretaria FOREIGN KEY (matricula_aluno) REFERENCES aluno(matricula),
+  CONSTRAINT fk_professor_secretaria FOREIGN KEY (matricula_professor) REFERENCES professor(matricula)
+);
+
+-- Criação da tabela curso
+CREATE TABLE curso (
+  codigo_curso INT PRIMARY KEY,
+  tipo_curso VARCHAR(50),
+  duracao_curso INT,
+  codigo_sala INT
+);
+
+-- Inserção de registros nas tabelas
+
+-- Tabela aluno
+INSERT INTO aluno (matricula, nome, cpf, turma, data_nascimento, sexo, id_curso) VALUES
+(1, 'Aluno 1', '12345678901', 'Turma A', '2000-01-01', 'M', 1),
+(2, 'Aluno 2', '23456789012', 'Turma B', '2000-02-02', 'F', 2),
+(3, 'Aluno 3', '34567890123', 'Turma C', '2000-03-03', 'M', 1),
+(4, 'Aluno 4', '45678901234', 'Turma A', '2000-04-04', 'F', 3),
+(5, 'Aluno 5', '56789012345', 'Turma B', '2000-05-05', 'M', 2),
+(6, 'Aluno 6', '67890123456', 'Turma C', '2000-06-06', 'F', 3);
+
+-- Tabela professor
+INSERT INTO professor (matricula, nome, cpf, especialidade, sexo, data_nascimento, id_secretaria) VALUES
+(1, 'Professor 1', '12345678901', 'Matemática', 'M', '1970-01-01', 1),
+(2, 'Professor 2', '23456789012', 'História', 'F', '1975-02-02', 2),
+(3, 'Professor 3', '34567890123', 'Ciências', 'M', '1980-03-03', 3),
+(4, 'Professor 4', '45678901234', 'Inglês', 'F', '1985-04-04', 1),
+(5, 'Professor 5', '56789012345', 'Geografia', 'M', '1990-05-05', 2),
+(6, 'Professor 6', '67890123456', 'Física', 'F', '1995-06-06', 3);
+
+-- Tabela secretaria
+INSERT INTO secretaria (matricula_aluno, matricula_professor, historico_escolar) VALUES
+(1, 1, 'Histórico 1'),
+(2, 2, 'Histórico 2'),
+(3, 3, 'Histórico 3'),
+(4, 4, 'Histórico 4'),
+(5, 5, 'Histórico 5'),
+(6, 6, 'Histórico 6');
+
+-- Tabela curso
+INSERT INTO curso (codigo_curso, tipo_curso, duracao_curso, codigo_sala) VALUES
+(1, 'Matemática', 4, 101),
+(2, 'História', 3, 102),
+(3, 'Ciências', 5, 103),
+(4, 'Inglês', 4, 201),
+(5, 'Geografia', 3, 202),
+(6, 'Física', 5, 203);
+Essa consulta criará o banco de dados "escola" com as cinco tabelas 
+(aluno, professor, secretaria, curso) e os relacionamentos definidos, 
+além de inserir seis registros em cada tabela.
+
+2)Você pode usar a seguinte consulta SQL para obter todas as alunas mulheres, 
+juntamente com o curso em que estão matriculadas, a duração do curso e o histórico 
+escolar:
+Solução
+SELECT a.nome AS aluna, c.nome AS curso, c.duracao_curso AS duracao, s.historico_escolar
+FROM aluno AS a
+JOIN curso AS c ON a.id_curso = c.codigo_curso
+JOIN secretaria AS s ON a.matricula = s.matricula_aluno
+WHERE a.sexo = 'F';
+
+SELECT: Indica que queremos selecionar determinadas colunas da tabela para exibição 
+no resultado da consulta.
+
+a.nome AS aluna, c.nome AS curso, c.duracao_curso AS duracao, s.historico_escolar: 
+Especifica as colunas que serão retornadas no resultado da consulta. a.nome AS aluna 
+renomeia a coluna nome da tabela aluno para aluna. c.nome AS curso renomeia a coluna 
+nome da tabela curso para curso. c.duracao_curso AS duracao renomeia a coluna duracao_curso 
+da tabela curso para duracao. s.historico_escolar indica a coluna historico_escolar da 
+tabela secretaria.
+
+FROM aluno AS a: Especifica a tabela principal da consulta como aluno e atribui o alias 
+"a" a essa tabela, permitindo referenciar as colunas da tabela usando o alias posteriormente 
+na consulta.
+
+JOIN curso AS c ON a.id_curso = c.codigo_curso: Realiza um INNER JOIN entre as tabelas aluno 
+e curso usando as colunas id_curso da tabela aluno e codigo_curso da tabela curso como 
+critério de junção. Isso relaciona as alunas com o curso em que estão matriculadas.
+
+JOIN secretaria AS s ON a.matricula = s.matricula_aluno: Realiza outro INNER JOIN, desta 
+vez entre as tabelas aluno e secretaria, usando as colunas matricula da tabela aluno e 
+matricula_aluno da tabela secretaria como critério de junção. Isso relaciona as alunas 
+com as informações de secretaria, como histórico escolar.
+
+WHERE a.sexo = 'F': Adiciona uma condição de filtro usando a cláusula WHERE para 
+selecionar apenas as alunas do sexo feminino. Isso limita o resultado da consulta para 
+mostrar somente as alunas mulheres.
+
+Ao executar essa consulta, o resultado exibirá as colunas selecionadas para todas as 
+alunas mulheres, juntamente com o nome do curso em que estão matriculadas, a duração 
+do curso e o histórico escolar correspondente a cada aluna.
+
+3)Para adicionar a entidade "administrador do banco de dados" e criar uma tabela de backup 
+para registrar alterações no banco de dados, você pode seguir os passos abaixo:
+-- Criação da tabela administrador
+CREATE TABLE administrador (
+  id_administrador INT PRIMARY KEY,
+  nome VARCHAR(50),
+  cpf VARCHAR(11),
+  data_nascimento DATE,
+  sexo CHAR(1)
+);
+Crie a tabela "backup" para registrar as alterações no banco de dados:
+-- Criação da tabela backup
+CREATE TABLE backup (
+  id_backup INT PRIMARY KEY AUTO_INCREMENT,
+  data_hora TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  tabela_afetada VARCHAR(50),
+  operacao VARCHAR(10),
+  registro_afetado VARCHAR(255)
+);
+
+Agora, para registrar automaticamente um backup a cada alteração realizada no banco de 
+dados, você pode usar os gatilhos (triggers) do MySQL. A seguir, apresento um exemplo 
+de gatilho para inserção nas tabelas "aluno" e "curso":
+-- Gatilho para inserção na tabela aluno
+DELIMITER $$
+CREATE TRIGGER aluno_insert_trigger
+AFTER INSERT ON aluno
+FOR EACH ROW
+BEGIN
+  INSERT INTO backup (tabela_afetada, operacao, registro_afetado)
+  VALUES ('aluno', 'INSERT', CONCAT('Aluno inserido: ', NEW.nome));
+END$$
+DELIMITER ;
+
+-- Gatilho para inserção na tabela curso
+DELIMITER $$
+CREATE TRIGGER curso_insert_trigger
+AFTER INSERT ON curso
+FOR EACH ROW
+BEGIN
+  INSERT INTO backup (tabela_afetada, operacao, registro_afetado)
+  VALUES ('curso', 'INSERT', CONCAT('Curso inserido: ', NEW.nome));
+END$$
+DELIMITER ;
+Antes de começar, é importante entender o conceito de gatilhos (triggers) 
+no MySQL. Os gatilhos são objetos de banco de dados que são acionados automaticamente 
+em resposta a um determinado evento, como a inserção, atualização ou exclusão de registros 
+em uma tabela. Podemos associar um gatilho a uma tabela e definir ações a serem executadas 
+quando o evento ocorrer.
+
+Aqui está o exemplo de gatilho para inserção na tabela "aluno":
+
+sql
+Copy code
+-- Gatilho para inserção na tabela aluno
+DELIMITER $$
+CREATE TRIGGER aluno_insert_trigger
+AFTER INSERT ON aluno
+FOR EACH ROW
+BEGIN
+  INSERT INTO backup (tabela_afetada, operacao, registro_afetado)
+  VALUES ('aluno', 'INSERT', CONCAT('Aluno inserido: ', NEW.nome));
+END$$
+DELIMITER ;
+A linha DELIMITER $$ é usada para alterar o delimitador de instrução padrão, para que 
+possamos incluir várias instruções dentro do gatilho.
+
+A seguir, temos a declaração CREATE TRIGGER aluno_insert_trigger, que cria o gatilho 
+hamado "aluno_insert_trigger" para a tabela "aluno".
+
+A cláusula AFTER INSERT ON aluno especifica que o gatilho será acionado após a realização 
+de uma operação de inserção na tabela "aluno".
+
+A cláusula FOR EACH ROW indica que o gatilho será executado para cada registro inserido 
+na tabela, ou seja, ele será executado individualmente para cada novo aluno inserido.
+
+Dentro do bloco BEGIN-END, temos a ação do gatilho. No exemplo, a ação é uma instrução 
+de inserção na tabela "backup".
+
+sql
+Copy code
+INSERT INTO backup (tabela_afetada, operacao, registro_afetado)
+VALUES ('aluno', 'INSERT', CONCAT('Aluno inserido: ', NEW.nome));
+Essa instrução INSERT insere um novo registro na tabela "backup". Os valores a serem 
+inseridos são fornecidos pelos seguintes parâmetros:
+
+tabela_afetada: É atribuído o valor 'aluno' para identificar a tabela afetada pelo evento.
+operacao: É atribuído o valor 'INSERT' para indicar que uma operação de inserção foi 
+realizada.
+registro_afetado: É usada a função CONCAT para criar uma descrição do registro inserido. 
+Neste caso, estamos concatenando a string 'Aluno inserido: ' com o valor da coluna "nome"
+ do novo registro inserido (NEW.nome).
+Isso significa que, sempre que um novo aluno for inserido na tabela "aluno", o gatilho 
+será acionado e um registro será inserido na tabela "backup" para registrar a operação 
+de inserção.
+
+Você pode criar gatilhos semelhantes para outras operações (UPDATE e DELETE) nas tabelas 
+que desejar. Basta ajustar as cláusulas AFTER e as ações dentro do bloco BEGIN-END de
+ acordo com a operação desejada.
+
+É importante mencionar que o uso de gatilhos e o registro de backups podem impact
