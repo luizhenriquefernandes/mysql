@@ -248,3 +248,76 @@ que desejar. Basta ajustar as cláusulas AFTER e as ações dentro do bloco BEGI
 o desempenho do banco de dados, especialmente em casos de alta carga ou operações 
 frequentes. Portanto, é necessário avaliar cuidadosamente a implementação em um 
 ambiente de produção.
+
+4) Para obter a média da idade de todos os alunos masculinos e femininos, 
+juntamente com o curso em que eles mais se inscreveram, você pode usar a 
+seguinte consulta em MySQL:
+
+SELECT 
+  sexo,
+  AVG(YEAR(CURDATE()) - YEAR(data_nascimento)) AS media_idade,
+  curso.nome AS curso_mais_inscrito
+FROM 
+  aluno
+JOIN 
+  curso ON aluno.id_curso = curso.id_curso
+GROUP BY 
+  sexo
+Explicação da consulta:
+
+A consulta começa selecionando os campos que queremos exibir: "sexo", a média da idade 
+e o nome do curso mais inscrito.
+
+Em seguida, fazemos um JOIN entre a tabela "aluno" e "curso" usando a chave 
+estrangeira "id_curso" na tabela "aluno" e o campo "id_curso" na tabela "curso".
+
+Usamos a função YEAR(CURDATE()) para obter o ano atual e subtraímos o ano de 
+nascimento do aluno (YEAR(data_nascimento)) para obter a idade. Em seguida, 
+usamos a função AVG para calcular a média da idade.
+
+Usamos a cláusula GROUP BY "sexo" para agrupar os resultados por sexo.
+
+Ao executar essa consulta, você obterá a média da idade dos alunos masculinos
+ e femininos, juntamente com o curso em que eles mais se inscreveram. Certifique-se 
+de substituir os nomes das tabelas e colunas de acordo com o seu esquema de banco de dados.
+
+
+
+Na primeira linha, usamos a cláusula SELECT para especificar os campos que queremos 
+elecionar e exibir no resultado da consulta:
+
+sexo: É o campo que representa o gênero do aluno.
+AVG(YEAR(CURDATE()) - YEAR(data_nascimento)) AS media_idade: Calcula a média da 
+idade dos alunos masculinos e femininos. A função YEAR(CURDATE()) retorna o ano
+atual e a função YEAR(data_nascimento) extrai o ano de nascimento do aluno. A 
+diferença entre esses dois valores dá a idade em anos. A função AVG calcula a 
+média dessas idades.
+curso.nome AS curso_mais_inscrito: Exibe o nome do curso em que os alunos estão 
+mais inscritos. O curso.nome é o nome da coluna que representa o nome do curso na 
+tabela "curso". Usamos o alias AS para renomear essa coluna como "curso_mais_inscrito".
+Na segunda linha, usamos a cláusula FROM para especificar a tabela principal da 
+consulta, que é a tabela "aluno".
+
+Em seguida, usamos a cláusula JOIN para unir a tabela "aluno" com a tabela "curso". 
+A condição de junção é definida pelo ON aluno.id_curso = curso.id_curso, onde 
+aluno.id_curso é a chave estrangeira que referencia o id_curso na tabela "curso".
+
+Na última linha, usamos a cláusula GROUP BY para agrupar os resultados por sexo. 
+Isso significa que obteremos um conjunto de resultados para cada sexo (masculino e feminino).
+
+Ao executar essa consulta, teremos como resultado as seguintes informações:
+
+Sexo: O campo que representa o gênero dos alunos (masculino ou feminino).
+Media_idade: A média da idade dos alunos desse sexo, calculada com base na data 
+de nascimento.
+Curso_mais_inscrito: O nome do curso em que os alunos desse sexo estão mais inscritos.
+Essa consulta nos fornece informações sobre a média de idade dos alunos masculinos e 
+femininos, juntamente com o curso em que eles mais se inscreveram. É importante 
+garantir que os nomes das tabelas e colunas estejam corretos de acordo com o esquema 
+do seu banco de dados.
+
+
+
+
+
+

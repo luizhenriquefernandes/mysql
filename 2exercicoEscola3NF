@@ -1,0 +1,67 @@
+Para recriar o exercício respeitando a terceira forma normal (3NF), 
+faremos algumas alterações no modelo de dados. A terceira forma normal 
+garante que não haja dependências transitivas entre os atributos de uma tabela.
+
+Vamos criar as tabelas de acordo com a terceira forma normal:
+CREATE TABLE aluno (
+  matricula INT PRIMARY KEY,
+  nome VARCHAR(50),
+  cpf VARCHAR(11),
+  data_nascimento DATE,
+  sexo CHAR(1),
+  id_curso INT,
+  FOREIGN KEY (id_curso) REFERENCES curso (id_curso)
+);
+
+A tabela "aluno" possui os atributos matrícula, nome, cpf, 
+data de nascimento, sexo e id_curso. O atributo id_curso é 
+uma chave estrangeira que referencia o id_curso da tabela "curso".
+
+CREATE TABLE professor (
+  matricula INT PRIMARY KEY,
+  nome VARCHAR(50),
+  cpf VARCHAR(11),
+  especialidade VARCHAR(50),
+  data_nascimento DATE,
+  sexo CHAR(1),
+  id_secretaria INT,
+  FOREIGN KEY (id_secretaria) REFERENCES secretaria (id_secretaria)
+);
+
+A tabela "professor" possui os atributos matrícula, nome, cpf, especialidade, 
+data de nascimento, sexo e id_secretaria. O atributo id_secretaria é uma chave 
+estrangeira que referencia o id_secretaria da tabela "secretaria".
+
+A tabela "secretaria" possui os atributos id_secretaria e historico_escolar. 
+O id_secretaria é a chave primária da tabela.
+CREATE TABLE curso (
+  id_curso INT PRIMARY KEY,
+  nome VARCHAR(50),
+  tipo_curso VARCHAR(50),
+  duracao_curso INT,
+  codigo_sala INT
+);
+
+A tabela "curso" possui os atributos id_curso, nome, tipo_curso, duracao_curso e 
+codigo_sala. O id_curso é a chave primária da tabela.
+
+Agora, vamos explicar o que foi realizado:
+
+Para atender à terceira forma normal, identificamos dependências transitivas e removemos 
+essas dependências movendo os atributos relacionados para suas respectivas tabelas. 
+Por exemplo, removemos o atributo "curso" da tabela "aluno" e criamos uma chave estrangeira 
+"id_curso" que referencia o id_curso da tabela "curso".
+
+Fizemos o mesmo para o atributo "secretaria" da tabela "professor" e criamos uma chave 
+estrangeira "id_secretaria" que referencia o id_secretaria da tabela "secretaria".
+
+Criamos a tabela "secretaria" separadamente, contendo apenas os atributos relacionados 
+à secretaria e seu respectivo id_secretaria.
+
+Também criamos a tabela "curso" separadamente, contendo os atributos relacionados ao 
+curso e seu respectivo id_curso.
+
+Dessa forma, as tabelas estão em conformidade com a terceira forma normal, eliminando 
+dependências transitivas e garantindo uma estrutura mais eficiente e livre de redundâncias. 
+Cada tabela possui suas chaves primárias e chaves estrangeiras definidas, mantendo a 
+integridade referencial entre as tabelas.
